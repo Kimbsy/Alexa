@@ -82,6 +82,8 @@ function onIntent(intentRequest, session, callback) {
         getUseResponse(intent, session, callback);
     } else if ("HelpIntent" === intentName) {
         getHelpResponse(intent, session, callback);
+    } else if ("ExitIntent" === intentName) {
+        getExitResponse(intent, session, callback);
     } else {
         throw "Invalid intent";
     }
@@ -109,7 +111,7 @@ function getGoResponse(intent, session, callback) {
 
     var speechOutput = "You decide to go " + direction;
     var repromptText = '';
-    var shouldEndSession = true;
+    var shouldEndSession = false;
 
     callback(sessionAttributes,
              buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
@@ -129,20 +131,22 @@ function getLookResponse(intent, session, callback) {
     var sessionAttributes = {};
     var speechOutput = '';
     var repromptText = '';
-    var shouldEndSession = true;
+    var shouldEndSession = false;
 
     callback(sessionAttributes,
              buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 function getGetResponse(intent, session, callback) {
-
+    var itemSlot = intent.slots.Item;
+    var item = itemSlot.value;
 
     var cardTitle = intent.name;
     var sessionAttributes = {};
-    var speechOutput = '';
+
+    var speechOutput = 'You grab the ' + item;
     var repromptText = '';
-    var shouldEndSession = true;
+    var shouldEndSession = false;
 
     callback(sessionAttributes,
              buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
@@ -155,13 +159,26 @@ function getUseResponse(intent, session, callback) {
     var sessionAttributes = {};
     var speechOutput = '';
     var repromptText = '';
-    var shouldEndSession = true;
+    var shouldEndSession = false;
 
     callback(sessionAttributes,
              buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 function getHelpResponse(intent, session, callback) {
+
+
+    var cardTitle = intent.name;
+    var sessionAttributes = {};
+    var speechOutput = '';
+    var repromptText = '';
+    var shouldEndSession = false;
+
+    callback(sessionAttributes,
+             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function getExitResponse(intent, session, callback) {
 
 
     var cardTitle = intent.name;
