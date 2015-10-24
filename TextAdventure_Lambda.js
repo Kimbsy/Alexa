@@ -110,16 +110,14 @@ function onSessionEnded(sessionEndedRequest, session) {
 
 function setupDungeon(session) {
   var dungeon = new Dungeon();
-  dungeon.xPos = 0;
-  dungeon.yPos = 0;
-  dungeon.xMax = dungeon.rooms.length;
-  dungeon.yMax = dungeon.rooms[0].length;
+  // dungeon.xMax = dungeon.rooms.length;
+  // dungeon.yMax = dungeon.rooms[0].length;
 
   session.attributes = {};
   session.attributes.dungeon = dungeon;
 }
 
-function Dungeon() {
+function Dungeon(player) {
   this.rooms = [
     [
       {
@@ -143,23 +141,32 @@ function Dungeon() {
     ]
   ];
 
-  this.xPos = 0;
-  this.yPos = 0;
+  this.player = player || {
+    position: {
+      x: 0,
+      y: 0
+    }
+  }
+
   this.xMax = this.rooms.length;
   this.yMax = this.rooms[0].length;
+
+  this.getRoomText = function() {
+    x = this.player.position.x;
+    y = this.player.position.y;
+
+    return this.rooms[x][y].text;
+  };
+
+  this.getAvailableItems = function() {
+    x = this.player.position.x;
+    y = this.player.position.y;
+
+    return this.rooms[x][y].items;
+  };
 }
 
-getRoom = function(dungeon, x, y) {
-  return dungeon.rooms[x][y];
-};
 
-getRoomText = function(dungeon, x, y) {
-  return dungeon.rooms[x][y].text;
-};
-
-getAvailableItems = function(dungeon, x, y) {
-  return dungeon.rooms[x][y].items;
-}
 
 
 
@@ -174,7 +181,7 @@ getAvailableItems = function(dungeon, x, y) {
 function getGoResponse(intent, session, callback) {
 
   // get dungeon data from session
-  var dungeon = session.attributes.dungeon;
+  var dungeon = new Dungeon(session.attributes.dungeon.player);
 
   var directionSlot = intent.slots.Direction;
   var direction = directionSlot.value;
@@ -182,35 +189,41 @@ function getGoResponse(intent, session, callback) {
 
   var moved = false;
 
+  var xPos = dungeon.player.position.x;
+  var yPos = dungeon.player.position.y;
+
   switch (direction) {
     case 'north':
-      if (dungeon.yPos > 0) {
-        dungeon.yPos -= 1;
+      if (yPos > 0) {
+        yPos -= 1;
         moved = true;
       }
       break;
     case 'south':
-      if (dungeon.yPos < dungeon.yMax - 1) {
-        dungeon.yPos += 1;
+      if (yPos < dungeon.yMax - 1) {
+        yPos += 1;
         moved = true;
       }
       break;
     case 'west':
-      if (dungeon.xPos > 0) {
-        dungeon.xPos -= 1;
+      if (xPos > 0) {
+        xPos -= 1;
         moved = true;
       }
       break;
     case 'east':
-      if (dungeon.xPos < dungeon.xMax - 1) {
-        dungeon.xPos += 1;
+      if (xPos < dungeon.xMax - 1) {
+        xPos += 1;
         moved = true;
       }
       break;
   }
 
+  dungeon.player.position.x = xPos;
+  dungeon.player.position.y = yPos;
+
   if (moved) {
-    speechOutput += getRoomText(dungeon, dungeon.xPos, dungeon.yPos);
+    speechOutput += dungeon.getRoomText();
   } else {
     speechOutput = 'You cannot travel ' + direction + '. ';
   }
@@ -230,7 +243,7 @@ function getGoResponse(intent, session, callback) {
 function getLookResponse(intent, session, callback) {
 
   // get dungeon data from session
-  var dungeon = session.attributes.dungeon;
+  var dungeon = new Dungeon(session.attributes.dungeon.player);
 
 
   var cardTitle = intent.name;
@@ -249,10 +262,10 @@ function getLookResponse(intent, session, callback) {
 function getGetResponse(intent, session, callback) {
 
   // get dungeon data from session
-  var dungeon = session.attributes.dungeon;
+  var dungeon = new Dungeon(session.attributes.dungeon.player);
 
   // get available items in room
-  availableItems = getAvailableItems(dungeon, 0, 0);
+  availableItems = dungeon.getAvailableItems();
 
   var itemSlot = intent.slots.Item;
   var item = itemSlot.value;
@@ -281,7 +294,7 @@ function getGetResponse(intent, session, callback) {
 function getUseResponse(intent, session, callback) {
 
   // get dungeon data from session
-  var dungeon = session.attributes.dungeon;
+  var dungeon = new Dungeon(session.attributes.dungeon.player);
 
 
   var cardTitle = intent.name;
