@@ -119,7 +119,14 @@ function Dungeon(player, rooms) {
     [
       {
         text: 'you enter room 0, 0. ',
-        items: ['sword', 'cat'],
+        items: ['cat'],
+        containers: [
+          {
+            name: 'chest',
+            locked: true,
+            items: ['sword']
+          }
+        ],
         enemies: []
       },
       {
@@ -186,7 +193,7 @@ function Dungeon(player, rooms) {
     this.rooms[x][y].items = items;
   };
 
-  this.getRoomText = function() {
+  this.getRoomEntryText = function() {
     var x = this.player.position.x;
     var y = this.player.position.y;
 
@@ -194,12 +201,12 @@ function Dungeon(player, rooms) {
 
     text += this.rooms[x][y].text;
 
-    text += this.getLayoutText();
+    text += this.getRoomLayoutText();
 
     return text;
   };
 
-  this.getLayoutText = function() {
+  this.getRoomLayoutText = function() {
     var x = this.player.position.x;
     var y = this.player.position.y;
 
@@ -216,6 +223,49 @@ function Dungeon(player, rooms) {
     }
     if (y + 1 < this.yMax) { // south is fine
       text += 'There is a door to the south. ';
+    }
+
+    return text;
+  };
+
+  this.getRoomLookText = function() {
+    var x = this.player.position.x;
+    var y = this.player.position.y;
+
+    var text = '';
+
+    var items = this.rooms[x][y].items;
+    var containers = this.rooms[x][y].containers;
+    var totalLength = containers.length + items.length;
+
+    if (totalLength) {
+      text += 'you see ';
+    }
+
+    // get text for items in room
+    for (var itemKey in items) {
+      var item = items[itemKey];
+      if (itemKey != 0) {
+        text += ', ';
+      }
+      if (itemKey + 1 == totalLength) {
+        text += 'and a ' + item;
+      } else {
+        text += 'a ' + item;
+      }
+    }
+
+    // get text for containers in room
+    for (var containerKey in containers) {
+      var container = containers[containerKey];
+      if (containerKey + items.length != 0) {
+        text += ', ';
+      }
+      if (parseInt(containerKey + items.length) + 1 == totalLength) {
+        text += 'and a ' + container.name;
+      } else {
+        text += 'a ' + container.name;
+      }
     }
 
     return text;
@@ -295,7 +345,7 @@ function getGoResponse(intent, session, callback) {
   dungeon.player.position.y = yPos;
 
   if (moved) {
-    speechOutput += dungeon.getRoomText();
+    speechOutput += dungeon.getRoomEntryText();
   } else {
     speechOutput = 'You cannot travel ' + direction + '. ';
   }
@@ -317,12 +367,15 @@ function getLookResponse(intent, session, callback) {
   // get dungeon data from session
   var dungeon = new Dungeon(session.attributes.dungeon.player, session.attributes.dungeon.rooms);
 
-  var cardTitle = intent.name;
   var speechOutput = '';
-  var repromptText = '';
-  var shouldEndSession = false;
 
+  speechOutput += dungeon.getRoomLookText();
+  
   var sessionAttributes = {dungeon: dungeon};
+
+  var repromptText = '';
+  var cardTitle = intent.name;
+  var shouldEndSession = false;
 
   callback(
     sessionAttributes,
@@ -337,7 +390,6 @@ function getGetResponse(intent, session, callback) {
 
   // get available items in room
   availableItems = dungeon.getAvailableItems();
-  console.log(availableItems);
 
   var itemSlot = intent.slots.Item;
   var item = itemSlot.value;

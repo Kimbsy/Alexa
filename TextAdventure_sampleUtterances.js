@@ -5,3 +5,5 @@ GetIntent get {Item}
 GetIntent take {Item}
 
 UseIntent use {Item}
+
+LookIntent look around
