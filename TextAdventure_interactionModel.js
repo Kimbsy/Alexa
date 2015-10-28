@@ -34,6 +34,14 @@
     {
       "intent": "HelpIntent",
       "slots": []
+    },
+    {
+      "intent": "InventoryIntent",
+      "slots": []
+    },
+    {
+      "intent": "QuitIntent",
+      "slots": []
     }
   ]
 }

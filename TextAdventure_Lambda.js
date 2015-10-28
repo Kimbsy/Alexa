@@ -87,8 +87,10 @@ function onIntent(intentRequest, session, callback) {
     getUseResponse(intent, session, callback);
   } else if ('HelpIntent' === intentName) {
     getHelpResponse(intent, session, callback);
-  } else if ('ExitIntent' === intentName) {
-    getExitResponse(intent, session, callback);
+  } else if ('InventoryIntent' === intentName) {
+    getInventoryResponse(intent, session, callback);
+  } else if ('QuitIntent' === intentName) {
+    getQuitResponse(intent, session, callback);
   } else {
     throw 'Invalid intent';
   }
@@ -167,9 +169,7 @@ function Dungeon(player, rooms) {
       y: 0
     },
     gold: 0,
-    items: [
-      'your wit'
-    ]
+    items: []
   }
 
   this.xMax = this.rooms.length;
@@ -179,7 +179,14 @@ function Dungeon(player, rooms) {
     var x = this.player.position.x;
     var y = this.player.position.y;
 
-    return this.rooms[x][y].items;
+    return this.rooms[x][y].items || [];
+  };
+
+  this.getAvailableContainers = function() {
+    var x = this.player.position.x;
+    var y = this.player.position.y;
+
+    return this.rooms[x][y].containers || [];
   };
 
   this.removeItem = function(item) {
@@ -229,43 +236,74 @@ function Dungeon(player, rooms) {
   };
 
   this.getRoomLookText = function() {
-    var x = this.player.position.x;
-    var y = this.player.position.y;
 
     var text = '';
 
-    var items = this.rooms[x][y].items;
-    var containers = this.rooms[x][y].containers;
+    var items = this.getAvailableItems();
+    var containers = this.getAvailableContainers();
     var totalLength = containers.length + items.length;
 
     if (totalLength) {
       text += 'you see ';
+    } else {
+      return 'You see nothing of use.';
     }
 
     // get text for items in room
-    for (var itemKey in items) {
-      var item = items[itemKey];
-      if (itemKey != 0) {
-        text += ', ';
-      }
-      if (itemKey + 1 == totalLength) {
-        text += 'and a ' + item;
-      } else {
-        text += 'a ' + item;
+    if (items) {
+      for (var itemKey in items) {
+        var item = items[itemKey];
+        if (itemKey != 0) {
+          text += ', ';
+        }
+        if (itemKey + 1 == totalLength && totalLength != 1) {
+          text += 'and a ' + item;
+        } else {
+          text += 'a ' + item;
+        }
       }
     }
 
     // get text for containers in room
-    for (var containerKey in containers) {
-      var container = containers[containerKey];
-      if (containerKey + items.length != 0) {
-        text += ', ';
+    if (containers) {
+      for (var containerKey in containers) {
+        var container = containers[containerKey];
+        if (containerKey + items.length != 0) {
+          text += ', ';
+        }
+        if (parseInt(containerKey + items.length) + 1 == totalLength && totalLength != 1) {
+          text += 'and a ' + container.name;
+        } else {
+          text += 'a ' + container.name;
+        }
       }
-      if (parseInt(containerKey + items.length) + 1 == totalLength) {
-        text += 'and a ' + container.name;
-      } else {
-        text += 'a ' + container.name;
+    }
+
+    return text;
+  };
+
+  this.getInventoryText = function() {
+
+    text = '';
+
+    items = this.player.items || [];
+
+    if (items) {
+      text += 'You have ';
+
+      for (var itemKey in items) {
+        var item = items[itemKey];
+        if (itemKey != 0) {
+          text += ', ';
+        }
+        if (itemKey + 1 == items.length && items.length != 1) {
+          text += 'and a ' + item;
+        } else {
+          text += 'a ' + item;
+        }
       }
+    } else {
+      return 'You hae nothing on you.';
     }
 
     return text;
@@ -436,13 +474,20 @@ function getUseResponse(intent, session, callback) {
   );
 }
 
-function getHelpResponse(intent, session, callback) {
+function getInventoryResponse(intent, session, callback) {
 
+  // get dungeon data from session
+  var dungeon = new Dungeon(session.attributes.dungeon.player, session.attributes.dungeon.rooms);
+
+  var speechOutput = '';
+
+  speechOutput = dungeon.getInventoryText();
 
   var cardTitle = intent.name;
-  var speechOutput = '';
   var repromptText = '';
   var shouldEndSession = false;
+
+  var sessionAttributes = {dungeon: dungeon};
 
   callback(
     sessionAttributes,
@@ -450,8 +495,32 @@ function getHelpResponse(intent, session, callback) {
   );
 }
 
-function getExitResponse(intent, session, callback) {
+function getHelpResponse(intent, session, callback) {
 
+  // get dungeon data from session
+  var dungeon = new Dungeon(session.attributes.dungeon.player, session.attributes.dungeon.rooms);
+
+  var speechOutput = 'You are in a dungeon text adventure. Use voice commands to move around, find and use items and fight enemies.';
+  speechOutput += ' The available commands are go, look around, get, use, help, quit.';
+
+  console.log(speechOutput);
+
+  var cardTitle = intent.name;
+  var repromptText = '';
+  var shouldEndSession = false;
+
+  var sessionAttributes = {dungeon: dungeon};
+
+  callback(
+    sessionAttributes,
+    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession)
+  );
+}
+
+function getQuitResponse(intent, session, callback) {
+
+  // get dungeon data from session
+  var dungeon = new Dungeon(session.attributes.dungeon.player, session.attributes.dungeon.rooms);
 
   var cardTitle = intent.name;
   var sessionAttributes = {};
@@ -464,15 +533,6 @@ function getExitResponse(intent, session, callback) {
     buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession)
   );
 }
-
-
-
-
-
-
-
-
-
 
 // --------------- Helpers that build all of the responses -----------------------
 

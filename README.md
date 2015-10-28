@@ -1,4 +1,4 @@
-# Alexa
+# Alexa Text Adventure
 Messing about with the Alexa Skills Kit and Lambda functions. Trying to mke a basic voice activated text adventure game.
 
 ```

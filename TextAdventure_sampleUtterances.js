@@ -7,3 +7,9 @@ GetIntent take {Item}
 UseIntent use {Item}
 
 LookIntent look around
+
+InventoryIntent inventory
+
+HelpIntent help
+
+QuitIntent quit
