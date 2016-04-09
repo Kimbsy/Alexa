@@ -26,6 +26,7 @@ deployment_files = [
     'TextlessAdventureHandler.py',
     'IntentManager.py',
     'Dungeon.py',
+    'Player.py',
 ]
 
 def _read_requirements():
