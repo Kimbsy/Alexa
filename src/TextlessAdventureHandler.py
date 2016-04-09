@@ -1,4 +1,5 @@
 from AlexaBaseHandler import AlexaBaseHandler
+from IntentManager import IntentManager
 
 
 class TextlessAdventureHandler(AlexaBaseHandler):
@@ -44,9 +45,9 @@ class TextlessAdventureHandler(AlexaBaseHandler):
         return self._build_response(session_attributes, speechlet)
 
     def on_processing_error(self, event, context, exc):
-        # print(type(exc))
-        # print(exc.args)
-        # print(exc)
+        print(type(exc))
+        print(exc.args)
+        print(exc)
         return self._test_response("on processing error")
 
     def on_launch(self, launch_request, session):
@@ -56,81 +57,10 @@ class TextlessAdventureHandler(AlexaBaseHandler):
         return self._test_response("on session started")
 
     def on_intent(self, intent_request, session):
-
-        intent = intent_request['intent']['name']
-
-        switch = {
-            'GoIntent'        : self.getGoResponse,
-            'LookIntent'      : self.getLookResponse,
-            'UseIntent'       : self.getUseResponse,
-            'HelpIntent'      : self.getHelpResponse,
-            'InventoryIntent' : self.getInventoryResponse,
-            'QuitIntent'      : self.getQuitResponse,
-        };
-
-        return switch[intent](intent_request, session)
+        # Let the IntentManager figure out what to do.
+        intent_manager = IntentManager();
+        data = intent_manager.manageIntent(intent_request, session)
+        return self._generate_intent_response(data)
 
     def on_session_ended(self, session_end_request, session):
         return self._test_response("on session end")
-
-
-
-    # ************************ #
-    # Intent response handlers #
-    # ************************ #
-
-
-    def getGoResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Go Request',
-            'card_output' : 'Go card output',
-            'request_name': 'go',
-        }
-
-        return self._generate_intent_response(data)
-
-    def getLookResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Look Request',
-            'card_output' : 'Look card output',
-            'request_name': 'look',
-        }
-
-        return self._generate_intent_response(data)
-    
-    def getUseResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Use Request',
-            'card_output' : 'Use card output',
-            'request_name': 'use',
-        }
-
-        return self._generate_intent_response(data)
-    
-    def getHelpResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Help Request',
-            'card_output' : 'Help card output',
-            'request_name': 'help',
-        }
-
-        return self._generate_intent_response(data)
-    
-    def getInventoryResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Inventory Request',
-            'card_output' : 'Inventory card output',
-            'request_name': 'inventory',
-        }
-
-        return self._generate_intent_response(data)
-    
-    def getQuitResponse(self, intent_request, session):
-        data = {
-            'card_title'  : 'Quit Request',
-            'card_output' : 'Quit card output',
-            'request_name': 'quit',
-        }
-
-        return self._generate_intent_response(data)
-    

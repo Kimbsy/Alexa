@@ -21,6 +21,3 @@ def lambda_handler(event, context):
     alexa_response = alexa.process_request(event, context)
 
     return alexa_response
-
-
-

@@ -21,9 +21,11 @@ root_deployments_dir = "./deployments"
 # Only the files listed here, and the libraries in the requirements.txt
 # file will be included in the deployment.
 deployment_files = [
-    'src/AlexaBaseHandler.py',
-    'src/TextlessAdventureHandler.py',
-    'src/main.py',
+    'main.py',
+    'AlexaBaseHandler.py',
+    'TextlessAdventureHandler.py',
+    'IntentManager.py',
+    'Dungeon.py',
 ]
 
 def _read_requirements():
@@ -70,6 +72,7 @@ def _install_requirements(deployment_requirements, deployment_dir):
 
 def _copy_deployment_files(deployment_dir):
     for deployment_file in deployment_files:
+        deployment_file = 'src/' + deployment_file
         if os.path.exists(deployment_file):
             cmd = "cp {0} {1}".format(deployment_file, deployment_dir).split()
             return_code = subprocess.call(cmd, shell=False)
