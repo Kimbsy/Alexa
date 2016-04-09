@@ -13,7 +13,6 @@ deployment_n
 
 where n is incremented for each deployment based on the existing deployment
 directories
-
 """
 
 root_deployments_dir = "./deployments"
@@ -21,10 +20,14 @@ root_deployments_dir = "./deployments"
 # List of files that should be included in the deployment
 # Only the files listed here, and the libraries in the requirements.txt
 # file will be included in the deployment.
-deployment_files = ['AlexaBaseHandler.py', 'AlexaDeploymentHandler.py', 'main.py']
+deployment_files = [
+    'src/AlexaBaseHandler.py',
+    'src/TextlessAdventureHandler.py',
+    'src/main.py',
+]
 
 def _read_requirements():
-    with open("./requirements.txt", 'r') as f:
+    with open("./src/requirements.txt", 'r') as f:
         install_requirements = f.readlines()
 
     return install_requirements
@@ -101,8 +104,8 @@ def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=False):
 
     includeDirInZip -- boolean indicating whether the top level directory should
     be included in the archive or omitted. (default True)
+    """
 
-"""
     if not zipFilePath:
         zipFilePath = dirPath + ".zip"
     if not os.path.isdir(dirPath):
