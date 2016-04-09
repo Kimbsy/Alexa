@@ -1,2 +1,3 @@
-Trying to get a Raspberry Pi Zero to act as an Amavon echo
+Python alexa skills with deployment scripts.
 
+Based on https://github.com/youngsoul/AlexaDeploymentSample
