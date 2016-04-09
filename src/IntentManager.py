@@ -1,3 +1,7 @@
+from Dungeon import Dungeon
+from Player import Player
+
+
 class IntentManager:
     """
     The IntentManager class is responsible for determining which intent has been
@@ -35,21 +39,31 @@ class IntentManager:
 
         direction = intent_request['intent']['slots']['Direction']['value']
 
-        moved = False
-
-        # Change the Player's position.
-        print(session['attributes'])
         session_attributes = session['attributes']
 
-        y_pos = session_attributes['player']['position']['y']
-        x_pos = session_attributes['player']['position']['x']
+        dungeon = Dungeon(session_attributes['dungeon_data'])
+        player  = Player(session_attributes['player_data'])
+        pos     = player.data['position']
+
+        if dungeon.move_is_allowed(pos, direction):
+            if direction == 'north':
+                pos['y'] = pos['y'] - 1
+            if direction == 'south':
+                pos['y'] = pos['y'] + 1
+            if direction == 'east':
+                pos['x'] = pos['x'] + 1
+            if direction == 'west':
+                pos['x'] = pos['x'] - 1
+
+            player.data['position'] = pos
+            session_attributes['player_data'] = player.data
+
+            data['speech_output'] = dungeon.get_room_entry_text(pos)
+        else:
+            data['speech_output'] = 'You cannot travel ' + direction + '. '
 
         data['session_attributes'] = session_attributes
 
-        if moved:
-            data['speech_output'] = 'temp'
-        else:
-            data['speech_output'] = 'You cannot travel ' + direction + '. '
 
         return data
 
@@ -60,6 +74,7 @@ class IntentManager:
             'request_name'      : 'look',
             'should_end_session': True
         }
+        # print(dungeon.get_room_layout_text(pos))
 
         return data
     

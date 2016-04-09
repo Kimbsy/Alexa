@@ -64,19 +64,52 @@ class Dungeon:
             ]
         ]
 
+    def move_is_allowed(self, pos, direction):
+        max_x = len(self.data[0])
+        max_y = len(self.data)
+
+        print(pos)
+
+        allowed = True
+
+        if direction == 'north':
+            if pos['y'] - 1 < 0:
+                allowed = False
+        if direction == 'south':
+            if pos['y'] + 1 >= max_y:
+                allowed = False
+        if direction == 'east':
+            if pos['x'] + 1 >= max_x:
+                allowed = False
+        if direction == 'west':
+            if pos['x'] - 1 < 0:
+                allowed = False
+
+        # check if door is locked?
+
+        return allowed
+
+    def get_room_entry_text(self, pos):
+
+        text = self.data[pos['x']][pos['y']]['text']
+
+        text = text + self.get_room_layout_text(pos)
+
+        return text
+
     def get_room_layout_text(self, pos):
-        max_x = len(self.data.rooms[0])
-        max_y = len(self.data.rooms)
+        max_x = len(self.data[0])
+        max_y = len(self.data)
 
         text = ''
 
-        if pos.x - 1 >= 0:
-            text = text + "There is a door to the west. "
-        if pos.x + 1 < max_x:
-            text = text + "There is a door to the east. "
-        if pos.y - 1 >= 0:
+        if pos['y'] - 1 >= 0:
             text = text + "There is a door to the north. "
-        if pos.x + 1 > max_y:
+        if pos['y'] + 1 < max_y:
             text = text + "There is a door to the south. "
+        if pos['x'] + 1 < max_x:
+            text = text + "There is a door to the east. "
+        if pos['x'] - 1 >= 0:
+            text = text + "There is a door to the west. "
 
         return text
