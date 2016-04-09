@@ -72,8 +72,10 @@ class IntentManager:
             'card_title'        : 'Look Request',
             'card_output'       : 'Look card output',
             'request_name'      : 'look',
-            'should_end_session': True
+            'should_end_session': False,
+            'session_attributes': {},
         }
+
         # print(dungeon.get_room_layout_text(pos))
 
         return data
@@ -83,7 +85,8 @@ class IntentManager:
             'card_title'        : 'Use Request',
             'card_output'       : 'Use card output',
             'request_name'      : 'use',
-            'should_end_session': True
+            'should_end_session': False,
+            'session_attributes': {},
         }
 
         return data
@@ -93,7 +96,8 @@ class IntentManager:
             'card_title'        : 'Help Request',
             'card_output'       : 'Help card output',
             'request_name'      : 'help',
-            'should_end_session': True
+            'should_end_session': False,
+            'session_attributes': {},
         }
 
         return data
@@ -103,17 +107,27 @@ class IntentManager:
             'card_title'        : 'Inventory Request',
             'card_output'       : 'Inventory card output',
             'request_name'      : 'inventory',
-            'should_end_session': True
+            'should_end_session': False,
+            'session_attributes': {},
         }
 
+        session_attributes = session['attributes']
+
+        player  = Player(session_attributes['player_data'])
+
+        data['speech_output'] = player.get_inventory_text()
+
+        data['session_attributes'] = session_attributes
+
         return data
-    
+
     def getQuitResponse(self, intent_request, session):
         data = {
             'card_title'        : 'Quit Request',
             'card_output'       : 'Quit card output',
             'request_name'      : 'quit',
-            'should_end_session': True
+            'should_end_session': True,
+            'session_attributes': {},
         }
 
         return data

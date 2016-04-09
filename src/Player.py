@@ -19,21 +19,25 @@ class Player:
                 'x': 0,
                 'y': 0,
             },
-            'items': [],
+            'items': [
+                {'name': ' shiny sword'},
+                {'name': 'n apple'},
+                {'name': ' cat.'},
+            ],
         }
 
     def get_inventory_text(self):
-        text = ''
+        text = 'You have '
 
         if len(self.data['items']):
             for i, item in enumerate(self.data['items']):
                 if i:
                     text = text + ', '
                 if i + 1 == len(self.data['items']):
-                    text = text + 'and a ' + item.name
+                    text = text + 'and a' + item['name']
                 else:
-                    text = text + 'a ' + item.name
+                    text = text + 'a' + item['name']
         else:
-            text = 'You have nothing on you.'
+            text = 'You have nothing in your inventory.'
 
         return text

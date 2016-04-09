@@ -17,14 +17,14 @@ class Dungeon:
                 {
                     'text': 'you enter room 0, 0. ',
                     'items': [
-                        {'name': 'cat'},
+                        {'name': ' cat'},
                     ],
                     'containers': [
                         {
                             'name': 'chest',
                             'locked': True,
                             'items': [
-                                {'name': 'sword'},
+                                {'name': ' sword'},
                             ]
                         }
                     ],
@@ -33,7 +33,7 @@ class Dungeon:
                 {
                     'text': 'you enter room 0, 1. ',
                     'items': [
-                        {'name': 'golf ball'},
+                        {'name': ' golf ball'},
                     ],
                     'enemies': []
                 }
@@ -57,7 +57,7 @@ class Dungeon:
                 {
                     'text': 'you enter room 1, 1. ',
                     'items': [
-                        {'name': 'key'},
+                        {'name': ' key'},
                     ],
                     'enemies': []
                 },
@@ -67,8 +67,6 @@ class Dungeon:
     def move_is_allowed(self, pos, direction):
         max_x = len(self.data[0])
         max_y = len(self.data)
-
-        print(pos)
 
         allowed = True
 
