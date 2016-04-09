@@ -1,0 +1,3 @@
+# Ingore deployment versions (keep readme for structure)
+deployments/*
+!deployments/README.md
