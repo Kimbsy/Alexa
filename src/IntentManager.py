@@ -13,21 +13,18 @@ class IntentManager:
         intent_name = intent_request['intent']['name']
 
         switch = {
-            'GoIntent'       : self.getGoResponse,
-            'LookIntent'     : self.getLookResponse,
-            'UseIntent'      : self.getUseResponse,
-            'HelpIntent'     : self.getHelpResponse,
-            'InventoryIntent': self.getInventoryResponse,
-            'QuitIntent'     : self.getQuitResponse,
+            'GoIntent'       : self.get_go_response,
+            'LookIntent'     : self.get_look_response,
+            'ShowExitsIntent': self.get_show_exits_response,
+            'UseIntent'      : self.get_use_response,
+            'HelpIntent'     : self.get_help_response,
+            'InventoryIntent': self.get_inventory_response,
+            'QuitIntent'     : self.get_quit_response,
         };
 
         return switch[intent_name](intent_request, session)
 
-    # *************** #
-    # Intent handlers #
-    # *************** #
-
-    def getGoResponse(self, intent_request, session):
+    def get_go_response(self, intent_request, session):
         data = {
             'card_title'        : 'Go Request',
             'card_output'       : 'Go card output',
@@ -64,10 +61,9 @@ class IntentManager:
 
         data['session_attributes'] = session_attributes
 
-
         return data
 
-    def getLookResponse(self, intent_request, session):
+    def get_look_response(self, intent_request, session):
         data = {
             'card_title'        : 'Look Request',
             'card_output'       : 'Look card output',
@@ -84,8 +80,26 @@ class IntentManager:
         data['speech_output'] = dungeon.get_room_look_text(player.data['position'])
 
         return data
+
+    def get_show_exits_response(self, intent_request, session):
+        data = {
+            'card_title'        : 'Show Exits Request',
+            'card_output'       : 'Show Exits card output',
+            'request_name'      : 'show_exits',
+            'should_end_session': False,
+            'session_attributes': {},
+        }
+
+        session_attributes = session['attributes']
+
+        dungeon = Dungeon(session_attributes['dungeon_data'])
+        player  = Player(session_attributes['player_data'])
+
+        data['speech_output'] = dungeon.get_room_layout_text(player.data['position'])
+
+        return data
     
-    def getUseResponse(self, intent_request, session):
+    def get_use_response(self, intent_request, session):
         data = {
             'card_title'        : 'Use Request',
             'card_output'       : 'Use card output',
@@ -96,7 +110,7 @@ class IntentManager:
 
         return data
     
-    def getHelpResponse(self, intent_request, session):
+    def get_help_response(self, intent_request, session):
         data = {
             'card_title'        : 'Help Request',
             'card_output'       : 'Help card output',
@@ -108,7 +122,7 @@ class IntentManager:
 
         return data
     
-    def getInventoryResponse(self, intent_request, session):
+    def get_inventory_response(self, intent_request, session):
         data = {
             'card_title'        : 'Inventory Request',
             'card_output'       : 'Inventory card output',
@@ -127,7 +141,7 @@ class IntentManager:
 
         return data
 
-    def getQuitResponse(self, intent_request, session):
+    def get_quit_response(self, intent_request, session):
         data = {
             'card_title'        : 'Quit Request',
             'card_output'       : 'Quit card output',

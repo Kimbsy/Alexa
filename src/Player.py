@@ -20,9 +20,8 @@ class Player:
                 'y': 0,
             },
             'items': [
-                {'name': ' shiny sword'},
+                {'name': ' small pocket knife'},
                 {'name': 'n apple'},
-                {'name': ' cat.'},
             ],
         }
 

@@ -35,6 +35,7 @@ class Dungeon:
                     'items': [
                         {'name': ' golf ball'},
                     ],
+                    'containers': [],
                     'enemies': []
                 }
             ],
@@ -43,6 +44,7 @@ class Dungeon:
                 {
                     'text': 'you enter room 1, 0. ',
                     'items': [],
+                    'containers': [],
                     'enemies': [
                         {
                             'name': 'troll',
@@ -59,6 +61,7 @@ class Dungeon:
                     'items': [
                         {'name': ' key'},
                     ],
+                    'containers': [],
                     'enemies': []
                 },
             ]
@@ -93,6 +96,8 @@ class Dungeon:
 
         text = text + self.get_room_layout_text(pos)
 
+        text = text + self.get_room_look_text(pos)
+
         return text
 
     def get_room_layout_text(self, pos):
@@ -102,13 +107,13 @@ class Dungeon:
         text = ''
 
         if pos['y'] - 1 >= 0:
-            text = text + "There is a door to the north. "
+            text = text + 'There is a door to the north. '
         if pos['y'] + 1 < max_y:
-            text = text + "There is a door to the south. "
+            text = text + 'There is a door to the south. '
         if pos['x'] + 1 < max_x:
-            text = text + "There is a door to the east. "
+            text = text + 'There is a door to the east. '
         if pos['x'] - 1 >= 0:
-            text = text + "There is a door to the west. "
+            text = text + 'There is a door to the west. '
 
         return text
 
@@ -137,7 +142,8 @@ class Dungeon:
             else:
                 text = text + 'a' + item['name']
 
-        text = text + ' '
+        if len(containers):
+            text = text + ' '
 
         # Get text for containers in room.
         for i, container in enumerate(containers):

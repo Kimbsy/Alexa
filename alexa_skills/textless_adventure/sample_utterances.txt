@@ -8,6 +8,8 @@ UseIntent use {Item}
 
 LookIntent look around
 
+ShowExitsIntent show exits
+
 InventoryIntent inventory
 
 HelpIntent help

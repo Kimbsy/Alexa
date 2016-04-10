@@ -14,6 +14,10 @@
       "slots": []
     },
     {
+      "intent": "ShowExitsIntent",
+      "slots": []
+    },
+    {
       "intent": "GetIntent",
       "slots": [
         {

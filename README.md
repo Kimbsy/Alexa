@@ -12,9 +12,9 @@ python create_deployment.py
 [Speech Synthesis Markup Language (SSML) Reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference)
 
 TODO:
-  * allow count of items in inventory (decide on pluralisation)
-  * create 'show exits' intent
-  * expand dungeon
-  * implement item usage
-  * implement combat?
-  * implement victory conditions, end game, etc.
+* implement 'get' intent
+* implement 'use' intent
+* allow count of items in inventory (decide on pluralisation)
+* expand dungeon
+* implement combat?
+* implement victory conditions, end game, etc.
