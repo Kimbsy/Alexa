@@ -29,11 +29,13 @@ class Player:
     def get_inventory_text(self):
         text = 'You have '
 
-        if len(self.data['items']):
-            for i, item in enumerate(self.data['items']):
+        items = self.data['items']
+
+        if len(items):
+            for i, item in enumerate(items):
                 if i:
                     text = text + ', '
-                if i + 1 == len(self.data['items']):
+                if i + 1 == len(items):
                     text = text + 'and a' + item['name']
                 else:
                     text = text + 'a' + item['name']

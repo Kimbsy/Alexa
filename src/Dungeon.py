@@ -21,7 +21,7 @@ class Dungeon:
                     ],
                     'containers': [
                         {
-                            'name': 'chest',
+                            'name': ' chest',
                             'locked': True,
                             'items': [
                                 {'name': ' sword'},
@@ -89,7 +89,7 @@ class Dungeon:
 
     def get_room_entry_text(self, pos):
 
-        text = self.data[pos['x']][pos['y']]['text']
+        text = self.data[pos['y']][pos['x']]['text']
 
         text = text + self.get_room_layout_text(pos)
 
@@ -109,5 +109,45 @@ class Dungeon:
             text = text + "There is a door to the east. "
         if pos['x'] - 1 >= 0:
             text = text + "There is a door to the west. "
+
+        return text
+
+    def get_room_look_text(self, pos):
+        text = ''
+
+        # Get total number of things in room.
+        room       = self.data[pos['y']][pos['x']]
+        items      = room['items']
+        containers = room['containers']
+
+        total_num = len(items) + len(containers)
+
+        # Decide start of phrase.
+        if total_num:
+            text = text + 'You see '
+        else:
+            text = text + 'You see nothing of use. '
+
+        # Get text for items in room
+        for i, item in enumerate(items):
+            if i:
+                text = text + ', '
+            if i + 1 == total_num and total_num != 1:
+                text = text + 'and a' + item['name']
+            else:
+                text = text + 'a' + item['name']
+
+        text = text + ' '
+
+        # Get text for containers in room.
+        for i, container in enumerate(containers):
+            if i:
+                text = text + ', '
+            if i + len(items) + 1 == total_num and total_num != 1:
+                text = text + 'and a' + container['name']
+            else:
+                text = text + 'a' + container['name']
+
+        text = text + '. '
 
         return text

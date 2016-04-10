@@ -43,7 +43,15 @@ class TextlessAdventureHandler(AlexaBaseHandler):
         print(type(exc))
         print(exc.args)
         print(exc)
-        return self._test_response("on processing error")
+        data = {
+            'card_title'        : 'ERROR',
+            'card_output'       : 'An error has occured',
+            'request_name'      : 'error',
+            'should_end_session': True,
+            'speech_output'     : 'An error has occured. ' + exc.args[0],
+            'session_attributes': {},
+        }
+        return self._generate_intent_response(data)
 
     def on_launch(self, launch_request, session):
         card_title         = "Session Started"
