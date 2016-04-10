@@ -16,6 +16,7 @@ class IntentManager:
             'GoIntent'       : self.get_go_response,
             'LookIntent'     : self.get_look_response,
             'ShowExitsIntent': self.get_show_exits_response,
+            'GetIntent'      : self.get_get_reponse,
             'UseIntent'      : self.get_use_response,
             'HelpIntent'     : self.get_help_response,
             'InventoryIntent': self.get_inventory_response,
@@ -98,6 +99,17 @@ class IntentManager:
         data['speech_output'] = dungeon.get_room_layout_text(player.data['position'])
 
         return data
+
+    def get_get_reponse(self, intent_request, session):
+        data = {
+            'card_title'        : 'Get Request',
+            'card_output'       : 'Get card output',
+            'request_name'      : 'get',
+            'should_end_session': False,
+            'session_attributes': {},
+        }
+
+        return data
     
     def get_use_response(self, intent_request, session):
         data = {
@@ -116,7 +128,7 @@ class IntentManager:
             'card_output'       : 'Help card output',
             'request_name'      : 'help',
             'should_end_session': False,
-            'session_attributes': session['attributes'] or {},
+            'session_attributes': session['attributes']
             'speech_output'     : 'Textless adventure is a voice activated dungeon exploration game. Use voice commands to move around, interact with your environment and try to figure out why on earth you are in a dungeon. Developed by Dave Kimber and Sam Briggs.'
         }
 
