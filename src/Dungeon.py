@@ -17,7 +17,7 @@ class Dungeon:
             # Top row.
             [
                 {
-                    'text': 'you enter room 0, 0. ',
+                    'text': 'you enter room 0 0. ',
                     'items': [
                         {'name': 'cat'},
                     ],
@@ -33,7 +33,7 @@ class Dungeon:
                     'enemies': []
                 },
                 {
-                    'text': 'you enter room 0, 1. ',
+                    'text': 'you enter room 0 1. ',
                     'items': [
                         {'name': 'golf ball'},
                     ],
@@ -44,7 +44,7 @@ class Dungeon:
             # Bottom row.
             [
                 {
-                    'text': 'you enter room 1, 0. ',
+                    'text': 'you enter room 1 0. ',
                     'items': [],
                     'containers': [],
                     'enemies': [
@@ -59,7 +59,7 @@ class Dungeon:
                     ]
                 },
                 {
-                    'text': 'you enter room 1, 1. ',
+                    'text': 'you enter room 1 1. ',
                     'items': [
                         {'name': 'key'},
                     ],
