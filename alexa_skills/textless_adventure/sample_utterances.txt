@@ -6,6 +6,7 @@ GetIntent take {Item}
 
 UseIntent use {Item}
 
+LookIntent look
 LookIntent look around
 
 ShowExitsIntent show exits

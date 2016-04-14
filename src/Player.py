@@ -22,12 +22,14 @@ class Player:
                 'y': 0,
             },
             'items': [
-                {'name': ' small pocket knife'},
-                {'name': 'n apple'},
+                {'name': 'small pocket knife'},
+                {'name': 'apple'},
             ],
         }
 
     def get_inventory_text(self):
+        """Creates a string listing the items in the PLayer's inventory.
+        """
         text = 'You have '
 
         items = self.data['items']
@@ -37,10 +39,15 @@ class Player:
                 if i:
                     text = text + ', '
                 if i + 1 == len(items):
-                    text = text + 'and a' + item['name']
+                    text = text + 'and a ' + item['name']
                 else:
-                    text = text + 'a' + item['name']
+                    text = text + 'a ' + item['name']
         else:
             text = 'You have nothing in your inventory.'
 
         return text
+
+    def add_item(self, item):
+        """Adds an item to the Player's inventory.
+        """
+        self.data['items'].append(item)

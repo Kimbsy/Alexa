@@ -19,14 +19,14 @@ class Dungeon:
                 {
                     'text': 'you enter room 0, 0. ',
                     'items': [
-                        {'name': ' cat'},
+                        {'name': 'cat'},
                     ],
                     'containers': [
                         {
-                            'name': ' chest',
+                            'name': 'chest',
                             'locked': True,
                             'items': [
-                                {'name': ' sword'},
+                                {'name': 'sword'},
                             ]
                         }
                     ],
@@ -35,7 +35,7 @@ class Dungeon:
                 {
                     'text': 'you enter room 0, 1. ',
                     'items': [
-                        {'name': ' golf ball'},
+                        {'name': 'golf ball'},
                     ],
                     'containers': [],
                     'enemies': []
@@ -49,7 +49,7 @@ class Dungeon:
                     'containers': [],
                     'enemies': [
                         {
-                            'name': ' troll',
+                            'name': 'troll',
                             'hp': 100,
                             'attack': 20,
                             'defense': 8,
@@ -61,7 +61,7 @@ class Dungeon:
                 {
                     'text': 'you enter room 1, 1. ',
                     'items': [
-                        {'name': ' key'},
+                        {'name': 'key'},
                     ],
                     'containers': [],
                     'enemies': []
@@ -157,9 +157,9 @@ class Dungeon:
             if i:
                 text = text + ', '
             if i + 1 == total_num and total_num != 1:
-                text = text + 'and a' + item['name']
+                text = text + 'and a ' + item['name']
             else:
-                text = text + 'a' + item['name']
+                text = text + 'a ' + item['name']
 
         if len(containers):
             text = text + ' '
@@ -169,15 +169,45 @@ class Dungeon:
             if i:
                 text = text + ', '
             if i + len(items) + 1 == total_num and total_num != 1:
-                text = text + 'and a' + container['name']
+                text = text + 'and a ' + container['name']
             else:
-                text = text + 'a' + container['name']
+                text = text + 'a ' + container['name']
 
         text = text + '. '
 
         return text
 
-    def item_is_available(self, item, pos):
+    def item_is_available(self, want_item, pos):
         """Determines whether a named item is available to the player in a room
         at a specified position.
         """
+        room       = self.data[pos['y']][pos['x']]
+        items      = room['items']
+        containers = room['containers']
+        available  = False
+
+        for container in containers:
+            if not container['locked']:
+                items = items + containers['items']
+
+        for item in items:
+            print(item['name'])
+            print(want_item)
+            if item['name'] == want_item:
+                available = True
+
+        return available
+
+    def take_item(self, want_item, pos):
+        """Removes and returns the data for a named item in the room at a
+        specified position.
+        """
+        room = self.data[pos['y']][pos['x']]
+
+        items = room['items']
+
+        for item in items:
+            if item['name'] == want_item:
+                self.data[pos['y']][pos['x']]['items'].remove(item)
+                return item
+

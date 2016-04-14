@@ -69,6 +69,7 @@ class IntentManager:
             'card_output'       : 'Look card output',
             'request_name'      : 'look',
             'should_end_session': False,
+            'speech_output'     : '',
             'session_attributes': {},
         }
 
@@ -79,6 +80,8 @@ class IntentManager:
 
         data['speech_output'] = dungeon.get_room_look_text(player.data['position'])
 
+        data['session_attributes'] = session_attributes
+
         return data
 
     def get_show_exits_response(self, intent_request, session):
@@ -87,6 +90,7 @@ class IntentManager:
             'card_output'       : 'Show Exits card output',
             'request_name'      : 'show_exits',
             'should_end_session': False,
+            'speech_output'     : '',
             'session_attributes': {},
         }
 
@@ -97,6 +101,8 @@ class IntentManager:
 
         data['speech_output'] = dungeon.get_room_layout_text(player.data['position'])
 
+        data['session_attributes'] = session_attributes
+
         return data
 
     def get_get_reponse(self, intent_request, session):
@@ -105,10 +111,11 @@ class IntentManager:
             'card_output'       : 'Get card output',
             'request_name'      : 'get',
             'should_end_session': False,
+            'speech_output'     : '',
             'session_attributes': {},
         }
 
-        item = intent_request['intent']['slots']['Item']['value']
+        want_item = intent_request['intent']['slots']['Item']['value']
 
         session_attributes = session['attributes']
 
@@ -116,10 +123,17 @@ class IntentManager:
         player  = Player(session_attributes['player_data'])
         pos     = player.data['position']
 
-        if dungeon.item_is_available(item, pos):
+        if dungeon.item_is_available(want_item, pos):
+            item = dungeon.take_item(want_item, pos)
             player.add_item(item)
-            dungeon.remove_item(item, pos)
-            data['speech_output'] = 'You take the ' + item
+            data['speech_output'] = 'You take the ' + want_item
+        else:
+            data['speech_output'] = 'You cannot take the ' + want_item
+
+        session_attributes['player_data']  = player.data
+        session_attributes['dungeon_data'] = dungeon.data
+
+        data['session_attributes'] = session_attributes
 
         return data
     
@@ -129,8 +143,13 @@ class IntentManager:
             'card_output'       : 'Use card output',
             'request_name'      : 'use',
             'should_end_session': False,
+            'speech_output'     : '',
             'session_attributes': {},
         }
+
+        session_attributes = session['attributes']
+
+        data['session_attributes'] = session_attributes
 
         return data
     
@@ -140,9 +159,13 @@ class IntentManager:
             'card_output'       : 'Help card output',
             'request_name'      : 'help',
             'should_end_session': False,
-            'session_attributes': session['attributes']
+            'session_attributes': session['attributes'],
             'speech_output'     : 'Textless adventure is a voice activated dungeon exploration game. Use voice commands to move around, interact with your environment and try to figure out why on earth you are in a dungeon. Developed by Dave Kimber and Sam Briggs.'
         }
+
+        session_attributes = session['attributes']
+
+        data['session_attributes'] = session_attributes
 
         return data
     
@@ -152,6 +175,7 @@ class IntentManager:
             'card_output'       : 'Inventory card output',
             'request_name'      : 'inventory',
             'should_end_session': False,
+            'speech_output'     : '',
             'session_attributes': {},
         }
 
@@ -171,6 +195,7 @@ class IntentManager:
             'card_output'       : 'Quit card output',
             'request_name'      : 'quit',
             'should_end_session': True,
+            'speech_output'     : '',
             'session_attributes': {},
         }
 
