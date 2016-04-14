@@ -1,6 +1,5 @@
 class Player:
-    """
-    The Player class is responsible for storing the status of the player as well
+    """The Player class is responsible for storing the status of the player as well
     as any items they might have.
     """
 
@@ -9,6 +8,9 @@ class Player:
         self.init_player(data)
 
     def init_player(self, data):
+        """Initialises the data structure of the Player object, 'data' argument
+        can be used to populate player data from session data.
+        """
         self.data = data or {
             'name'    : 'Anon',
             'hp'      : 100,

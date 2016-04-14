@@ -5,8 +5,7 @@ from Player import Player
 
 
 class TextlessAdventureHandler(AlexaBaseHandler):
-    """
-    Concrete implementation of the AlexaBaseHandler for Textless Adventure game.
+    """Concrete implementation of the AlexaBaseHandler for Textless Adventure game.
 
     This class takes requests from Alexa and returns responses to be spoken.
     """

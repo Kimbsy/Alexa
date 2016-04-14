@@ -1,8 +1,7 @@
 import logging
 from TextlessAdventureHandler import TextlessAdventureHandler
 
-"""
-Main entry point for the Lambda function.
+"""Main entry point for the Lambda function.
 In the AWS Lamba console, under the 'Configuration' tab there is an
 input field called, 'Handler'.  That should be:  main.lambda_handler
 

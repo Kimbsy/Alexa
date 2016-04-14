@@ -3,8 +3,7 @@ import logging
 
 
 class AlexaBaseHandler(object):
-    """
-    Base class for a python Alexa Skill Set.  Concrete implementations
+    """Base class for a python Alexa Skill Set.  Concrete implementations
     are expected to implement the abstract methods.
 
     See the following for Alexa details:

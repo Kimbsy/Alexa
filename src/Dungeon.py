@@ -1,6 +1,5 @@
 class Dungeon:
-    """
-    The Dungeon class is responsible for storing the data and structure of the
+    """The Dungeon class is responsible for storing the data and structure of the
     dungeon.
 
     It also has helper functions for describing the rooms.
@@ -11,6 +10,9 @@ class Dungeon:
         self.init_dungeon(data)
 
     def init_dungeon(self, data):
+        """Initialises the data structure of the Dungeon object, 'data' argument
+        can be used to populate dungeon data from session data.
+        """
         self.data = data or [
             # Top row.
             [
@@ -47,7 +49,7 @@ class Dungeon:
                     'containers': [],
                     'enemies': [
                         {
-                            'name': 'troll',
+                            'name': ' troll',
                             'hp': 100,
                             'attack': 20,
                             'defense': 8,
@@ -68,6 +70,12 @@ class Dungeon:
         ]
 
     def move_is_allowed(self, pos, direction):
+        """Determines if a move from a position in a specified direction is
+        allowed by the layout of the dungeon.
+        """
+
+        # @TODO: Make this based on a list of rooms each room connects to.
+
         max_x = len(self.data[0])
         max_y = len(self.data)
 
@@ -91,7 +99,10 @@ class Dungeon:
         return allowed
 
     def get_room_entry_text(self, pos):
-
+        """Creates a string describing your entrance into the room, follwed by
+        the available exits from the room, followed by the items and containers
+        visible in the room.
+        """
         text = self.data[pos['y']][pos['x']]['text']
 
         text = text + self.get_room_layout_text(pos)
@@ -101,6 +112,11 @@ class Dungeon:
         return text
 
     def get_room_layout_text(self, pos):
+        """Creates a string describing the available exits from the room.
+        """
+
+        # @TODO Make this based on a list of rooms each room connects to.
+
         max_x = len(self.data[0])
         max_y = len(self.data)
 
@@ -118,6 +134,9 @@ class Dungeon:
         return text
 
     def get_room_look_text(self, pos):
+        """Creates a string listing the items and containers visible in the
+        room.
+        """
         text = ''
 
         # Get total number of things in room.
@@ -157,3 +176,8 @@ class Dungeon:
         text = text + '. '
 
         return text
+
+    def item_is_available(self, item, pos):
+        """Determines whether a named item is available to the player in a room
+        at a specified position.
+        """

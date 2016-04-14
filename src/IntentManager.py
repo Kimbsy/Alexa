@@ -3,8 +3,7 @@ from Player import Player
 
 
 class IntentManager:
-    """
-    The IntentManager class is responsible for determining which intent has been
+    """The IntentManager class is responsible for determining which intent has been
     invoked, triggering further actions and creating the response for the
     TextlessAdventureHandler.
     """
@@ -108,6 +107,19 @@ class IntentManager:
             'should_end_session': False,
             'session_attributes': {},
         }
+
+        item = intent_request['intent']['slots']['Item']['value']
+
+        session_attributes = session['attributes']
+
+        dungeon = Dungeon(session_attributes['dungeon_data'])
+        player  = Player(session_attributes['player_data'])
+        pos     = player.data['position']
+
+        if dungeon.item_is_available(item, pos):
+            player.add_item(item)
+            dungeon.remove_item(item, pos)
+            data['speech_output'] = 'You take the ' + item
 
         return data
     
