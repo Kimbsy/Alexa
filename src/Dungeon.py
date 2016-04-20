@@ -14,59 +14,132 @@ class Dungeon:
         can be used to populate dungeon data from session data.
         """
         self.data = data or [
-            # Top row.
+            # Past.
             [
-                {
-                    'text': 'you enter room 0 0. ',
-                    'items': [
-                        {'name': 'cat'},
-                    ],
-                    'containers': [
-                        {
-                            'name': 'chest',
-                            'locked': True,
-                            'items': [
-                                {'name': 'sword'},
-                            ]
-                        }
-                    ],
-                    'enemies': []
-                },
-                {
-                    'text': 'you enter room 0 1. ',
-                    'items': [
-                        {'name': 'golf ball'},
-                    ],
-                    'containers': [],
-                    'enemies': []
-                }
+                # Top row.
+                [
+                    {
+                        'entry_text': 'you enter room 0 0 0. It is in the past. ',
+                        'exits': [
+                            'east',
+                            'south',
+                        ],
+                        'items': [],
+                        'containers': [],
+                    },
+                    {
+                        'entry_text': 'you enter room 0 0 1. It is in the past. ',
+                        'exits': [
+                            'west',
+                            'south',
+                        ],
+                        'items': [],
+                        'containers': [],
+                    }
+                ],
+                # Bottom row.
+                [
+                    {
+                        'entry_text': 'you enter room 0 1 0. It is in the past. ',
+                        'exits': [
+                            'east',
+                            'north',
+                        ],
+                        'items': [
+                            {
+                                'name': 'portal',
+                                'directions': [
+                                    'future'
+                                ],
+                                'activators': [
+                                    'sword of time'
+                                ],
+                            },
+                        ],
+                        'containers': [],
+                    },
+                    {
+                        'entry_text': 'you enter room 0 1 1. It is in the past. ',
+                        'exits': [
+                            'west',
+                            'north',
+                        ],
+                        'items': [],
+                        'containers': [],
+                    }
+                ],
             ],
-            # Bottom row.
+            # Present.
             [
-                {
-                    'text': 'you enter room 1 0. ',
-                    'items': [],
-                    'containers': [],
-                    'enemies': [
-                        {
-                            'name': 'troll',
-                            'hp': 100,
-                            'attack': 20,
-                            'defense': 8,
-                            'minGold': 20,
-                            'maxGold': 40
-                        }
-                    ]
-                },
-                {
-                    'text': 'you enter room 1 1. ',
-                    'items': [
-                        {'name': 'key'},
-                    ],
-                    'containers': [],
-                    'enemies': []
-                },
-            ]
+                # Top row.
+                [
+                    {
+                        'entry_text': 'you enter room 1 0 0. ',
+                        'exits': [
+                            'east',
+                            'south',
+                        ],
+                        'items': [
+                            {'name': 'cat'},
+                        ],
+                        'containers': [
+                            {
+                                'name': 'chest',
+                                'locked': True,
+                                'items': [
+                                    {'name': 'sword of time'},
+                                ],
+                                'activators': [
+                                    'key',
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        'entry_text': 'you enter room 1 0 1. ',
+                        'exits': [
+                            'west',
+                            'south',
+                        ],
+                        'items': [
+                            {
+                                'name': 'portal',
+                                'directions': [
+                                    'past'
+                                ],
+                                'activators': [
+                                    'sword of time'
+                                ],
+                            },                        ],
+                        'containers': [],
+                    }
+                ],
+                # Bottom row.
+                [
+                    {
+                        'entry_text': 'you enter room 1 1 0. ',
+                        'exits': [
+                            'east',
+                            'north',
+                        ],
+                        'items': [],
+                        'containers': [],
+                    },
+                    {
+                        'entry_text': 'you enter room 1 1 1. ',
+                        'exits': [
+                            'west',
+                            'north',
+                        ],
+                        'items': [
+                            {'name': 'key'},
+                        ],
+                        'containers': [],
+                    },
+                ]
+            ],
+            # Future
+            []
         ]
 
     def move_is_allowed(self, pos, direction):
@@ -74,25 +147,13 @@ class Dungeon:
         allowed by the layout of the dungeon.
         """
 
-        # @TODO: Make this based on a list of rooms each room connects to.
+        allowed = False
 
-        max_x = len(self.data[0])
-        max_y = len(self.data)
+        room = self.data[pos['z']][pos['y']][pos['x']]
 
-        allowed = True
-
-        if direction == 'north':
-            if pos['y'] - 1 < 0:
-                allowed = False
-        if direction == 'south':
-            if pos['y'] + 1 >= max_y:
-                allowed = False
-        if direction == 'east':
-            if pos['x'] + 1 >= max_x:
-                allowed = False
-        if direction == 'west':
-            if pos['x'] - 1 < 0:
-                allowed = False
+        for exit in room['exits']:
+            if exit == direction:
+                allowed = True
 
         # check if door is locked?
 
@@ -103,7 +164,7 @@ class Dungeon:
         the available exits from the room, followed by the items and containers
         visible in the room.
         """
-        text = self.data[pos['y']][pos['x']]['text']
+        text = self.data[pos['z']][pos['y']][pos['x']]['entry_text']
 
         text = text + self.get_room_layout_text(pos)
 
@@ -115,21 +176,12 @@ class Dungeon:
         """Creates a string describing the available exits from the room.
         """
 
-        # @TODO Make this based on a list of rooms each room connects to.
-
-        max_x = len(self.data[0])
-        max_y = len(self.data)
+        room = self.data[pos['z']][pos['y']][pos['x']]
 
         text = ''
 
-        if pos['y'] - 1 >= 0:
-            text = text + 'There is a door to the north. '
-        if pos['y'] + 1 < max_y:
-            text = text + 'There is a door to the south. '
-        if pos['x'] + 1 < max_x:
-            text = text + 'There is a door to the east. '
-        if pos['x'] - 1 >= 0:
-            text = text + 'There is a door to the west. '
+        for exit in room['exits']:
+            text = text + 'There is a door to the ' + exit + '. '
 
         return text
 
@@ -140,7 +192,7 @@ class Dungeon:
         text = ''
 
         # Get total number of things in room.
-        room       = self.data[pos['y']][pos['x']]
+        room       = self.data[pos['z']][pos['y']][pos['x']]
         items      = room['items']
         containers = room['containers']
 
@@ -181,7 +233,7 @@ class Dungeon:
         """Determines whether a named item is available to the player in a room
         at a specified position.
         """
-        room       = self.data[pos['y']][pos['x']]
+        room       = self.data[pos['z']][pos['y']][pos['x']]
         items      = room['items']
         containers = room['containers']
         available  = False
@@ -202,12 +254,11 @@ class Dungeon:
         """Removes and returns the data for a named item in the room at a
         specified position.
         """
-        room = self.data[pos['y']][pos['x']]
+        room = self.data[pos['z']][pos['y']][pos['x']]
 
         items = room['items']
 
         for item in items:
             if item['name'] == want_item:
-                self.data[pos['y']][pos['x']]['items'].remove(item)
+                self.data[pos['z']][pos['y']][pos['x']]['items'].remove(item)
                 return item
-

@@ -20,6 +20,7 @@ class Player:
             'position': {
                 'x': 0,
                 'y': 0,
+                'z': 1,
             },
             'items': [
                 {'name': 'small pocket knife'},
@@ -51,3 +52,12 @@ class Player:
         """Adds an item to the Player's inventory.
         """
         self.data['items'].append(item)
+
+    def has_item(self, item_name):
+        """Determines if the Player has a specified item in their inventory.
+        """
+        for item in self.data['items']:
+            if item['name'] == item_name:
+                return True
+
+        return False

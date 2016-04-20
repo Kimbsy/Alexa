@@ -1,5 +1,6 @@
 from Dungeon import Dungeon
 from Player import Player
+from ItemController import ItemController
 
 
 class IntentManager:
@@ -115,7 +116,7 @@ class IntentManager:
             'session_attributes': {},
         }
 
-        want_item = intent_request['intent']['slots']['Item']['value']
+        item_name = intent_request['intent']['slots']['Item']['value']
 
         session_attributes = session['attributes']
 
@@ -123,12 +124,12 @@ class IntentManager:
         player  = Player(session_attributes['player_data'])
         pos     = player.data['position']
 
-        if dungeon.item_is_available(want_item, pos):
-            item = dungeon.take_item(want_item, pos)
+        if dungeon.item_is_available(item_name, pos):
+            item = dungeon.take_item(item_name, pos)
             player.add_item(item)
-            data['speech_output'] = 'You take the ' + want_item
+            data['speech_output'] = 'You take the ' + item_name
         else:
-            data['speech_output'] = 'You cannot take the ' + want_item
+            data['speech_output'] = 'You cannot take the ' + item_name
 
         session_attributes['player_data']  = player.data
         session_attributes['dungeon_data'] = dungeon.data
@@ -147,7 +148,17 @@ class IntentManager:
             'session_attributes': {},
         }
 
+        item_name = intent_request['intent']['slots']['Item']['value']
+
         session_attributes = session['attributes']
+
+        dungeon = Dungeon(session_attributes['dungeon_data'])
+        player  = Player(session_attributes['player_data'])
+
+        itemController = ItemController(dungeon, player)
+        response       = itemController.use_item(item_name)
+
+        data['speech_output'] = response
 
         data['session_attributes'] = session_attributes
 
@@ -160,7 +171,9 @@ class IntentManager:
             'request_name'      : 'help',
             'should_end_session': False,
             'session_attributes': session['attributes'],
-            'speech_output'     : 'Textless adventure is a voice activated dungeon exploration game. Use voice commands to move around, interact with your environment and try to figure out why on earth you are in a dungeon. Developed by Dave Kimber and Sam Briggs.'
+            'speech_output'     : """Textless adventure is a voice activated dungeon exploration game. Use voice
+             commands to move around, interact with your environment and try to figure out why on earth you are in a
+             dungeon. Developed by Dave Kimber and Sam Briggs."""
         }
 
         session_attributes = session['attributes']

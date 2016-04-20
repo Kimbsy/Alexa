@@ -25,6 +25,7 @@ deployment_files = [
     'AlexaBaseHandler.py',
     'TextlessAdventureHandler.py',
     'IntentManager.py',
+    'ItemController.py',
     'Dungeon.py',
     'Player.py',
 ]
