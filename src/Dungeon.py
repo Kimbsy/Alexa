@@ -218,12 +218,28 @@ class Dungeon:
 
         # Get text for containers in room.
         for i, container in enumerate(containers):
+            description = ''
+            if container['locked']:
+                description = description + 'locked '
+            description = description + container['name']
+
             if i:
                 text = text + ', '
             if i + len(items) + 1 == total_num and total_num != 1:
-                text = text + 'and a ' + container['name']
+                text = text + 'and a ' + description
             else:
-                text = text + 'a ' + container['name']
+                text = text + 'a ' + description
+
+            if not container['locked'] and len(container['items']):
+                text = text + ' with '
+                for i, container_item in enumerate(container['items']):
+                    if i:
+                        text = text + ', '
+                    if i + 1 == total_num and total_num != 1:
+                        text = text + 'and a ' + container_item['name']
+                    else:
+                        text = text + 'a ' + container_item['name']
+                        text = text + ' inside'
 
         text = text + '. '
 
@@ -240,11 +256,9 @@ class Dungeon:
 
         for container in containers:
             if not container['locked']:
-                items = items + containers['items']
+                items = items + container['items']
 
         for item in items:
-            print(item['name'])
-            print(want_item)
             if item['name'] == want_item:
                 available = True
 
@@ -256,9 +270,22 @@ class Dungeon:
         """
         room = self.data[pos['z']][pos['y']][pos['x']]
 
-        items = room['items']
+        items      = room['items']
+        containers = room['containers']
+
+        removed_item = None
 
         for item in items:
             if item['name'] == want_item:
                 self.data[pos['z']][pos['y']][pos['x']]['items'].remove(item)
-                return item
+                removed_item = item
+
+        if not removed_item:
+            for c_index, container in enumerate(containers):
+                container_items = container['items']
+                for container_item in container_items:
+                    if container_item['name'] == want_item:
+                        self.data[pos['z']][pos['y']][pos['x']]['containers'][c_index]['items'].remove(container_item)
+                        removed_item = container_item
+
+        return removed_item

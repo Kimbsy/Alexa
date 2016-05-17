@@ -41,6 +41,7 @@ class ItemController:
                     if activator == item_name:
                         return container
 
+
         return False
 
     def perform_actions(self, activated, activator):
@@ -51,6 +52,7 @@ class ItemController:
         """
         response = 'you use the ' + activator + ' on the ' + activated['name'] + '. '
 
-        # @TODO: dis can haz logics
+        if activator == 'key' and activated['name'] == 'chest':
+            activated['locked'] = False
         
         return response

@@ -25,6 +25,7 @@ class Player:
             'items': [
                 {'name': 'small pocket knife'},
                 {'name': 'apple'},
+                {'name': 'key'},
             ],
         }
 
